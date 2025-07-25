@@ -34,7 +34,6 @@ const login = async (email, password) =>{
     {id: user.id, email: user.email}, 
     process.env.JWT_SECRET, 
     {expiresIn: '5h'})
-
   return {...user, token};
 }
 
