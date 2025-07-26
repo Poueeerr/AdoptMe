@@ -2,8 +2,8 @@ import userServices from "../services/userServices.js";
 
 const create = async (req, res) =>{
     try{
-        const {name, email, password} = req.body;
-        const user = await userServices.createUser(name, email, password);
+        const {name, email, password, phone} = req.body;
+        const user = await userServices.createUser(name, email, password, phone);
         res.status(201).json(user);
     }catch(e){
         res.status(500).json({ err: e.message })

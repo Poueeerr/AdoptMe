@@ -3,10 +3,10 @@ import postsServices from "../services/postsServices.js";
 const createPost = async (req, res) =>{
     try{
         const authHeader = req.headers.authorization;
-        const {tags, content, imagesUrl} = req.body;
+        const {title, tags, content, imagesUrl} = req.body;
         const token = authHeader.split(' ')[1];
 
-        const response = await postsServices.createPost(token, tags, content, imagesUrl);
+        const response = await postsServices.createPost(token,title, tags, content, imagesUrl);
         
         res.status(201).json(response);
     }catch(e){
@@ -28,10 +28,20 @@ const getPostsPage = async (req, res) =>{
 const getSize = async (req, res) =>{
     try{
         const response = await postsServices.postsSize();
-        res.status(201).json(response);
+        res.status(200).json(response);
     }catch(e){
         res.status(500).json({ err: e.message })
     }
 }
 
-export default {createPost, getPostsPage, getSize}
+const getUserInfo = async(req,res)=>{
+    try{
+        const {postId} = req.params
+        const response = await postsServices.getUserInfo(parseInt(postId));
+        res.status(200).json(response);
+    }
+    catch(e){
+        res.status(500).json({ err: e.message })
+    }
+}
+export default {createPost, getPostsPage, getSize, getUserInfo}

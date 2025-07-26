@@ -3,15 +3,15 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken'
 
 
-const createUser = async (name, email, password) => {
+const createUser = async (name, email, password, phone) => {
     if (!email.includes('@')) throw new Error('Invalid email');
 
-    const existingUser = await userRepository.findByEmail(email);
-    if (existingUser != null) throw new Error('Email is already registered');
+    const existingUser = await userRepository.findUser(email, phone);
+    if (existingUser != null) throw new Error('Email or Phone is already registered');
 
     password = await bcrypt.hash(password, 10);
     
-    const response = userRepository.createUser({ name, email, password });
+    const response = userRepository.createUser({ name, email, password, phone });
     const token = jwt.sign(
         {id: response.id, email: response.email}, 
         process.env.JWT_SECRET, 
@@ -22,7 +22,7 @@ const createUser = async (name, email, password) => {
 
 const login = async (email, password) =>{
     
-  const user = await userRepository.findByEmail(email);
+  const user = await userRepository.findUser(email);
   if (user == null) throw new Error('User not found');
 
   const match = await bcrypt.compare(password, user.password);

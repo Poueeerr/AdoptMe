@@ -3,7 +3,7 @@ import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient({})
 
 async function postsSize() {
-  const total = prisma.posts.count();
+  const total = await prisma.posts.count();
   return Math.ceil(total/20)
 }
 
@@ -14,10 +14,28 @@ async function getPostsPage(page) {
   });
 }
 
+async function getUserInfo(postId) {
+  return await prisma.posts.findUnique({
+    where: { id: Number(postId) },
+    select: {
+      author: {
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          phone: true,
+        }
+      }
+    }
+  });
+}
+
+
+
 async function createPost(postData){
     return prisma.posts.create({
         data: postData
     })
 }
 
-export default {getPostsPage, createPost, postsSize}
+export default {getPostsPage, createPost, postsSize, getUserInfo}

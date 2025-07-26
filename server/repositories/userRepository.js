@@ -7,14 +7,18 @@ async function findAll(){
     return returnUser
 }
 
-async function findByEmail(email){
-    const returnUser = await prisma.user.findUnique({
+async function findUser(email, phone){
+    const returnUser = await prisma.user.findFirst({
         where: {
-            email: email
+            OR: [
+                { email: email },
+                { phone: phone }
+            ]
         }
     });
-    return returnUser
+    return returnUser;
 }
+
 
 async function findById(id){
     const returnUser = await prisma.user.findUnique({
@@ -33,4 +37,4 @@ async function createUser(userData){
 }
 
 
-export default {findAll, findByEmail, createUser, findById}
+export default {findAll, findUser, createUser, findById}

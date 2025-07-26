@@ -6,6 +6,7 @@ const router = express.Router();
 
 router.get('/getPage/:page', postsController.getPostsPage);
 router.post('/create', authMiddleware, postsController.createPost)
-router.get('/postSize', postsController.getSize) //Ta retornando null, arrumar 
+router.get('/postSize', postsController.getSize) 
+router.get('/getUserInfo/:postId', postsController.getUserInfo);
 
 export default router;
