@@ -1,20 +1,23 @@
 import express from 'express';
 import userRoutes from './routes/userRoutes.js';
-import 'dotenv/config';
-import validateToken from './authToken.js'
-import postRoutes from './routes/postRoutes.js'
+import postRoutes from './routes/postRoutes.js';
+import validateToken from './authToken.js';
 
 import cors from 'cors';
+import dotenv from 'dotenv';
+import { dirname, resolve } from 'path';
+import { fileURLToPath } from 'url';
 
+const __dirname = dirname(fileURLToPath(import.meta.url));
+dotenv.config({ path: resolve(__dirname, '../.env') });
 const app = express();
+
 app.use(express.json());
 app.use(cors({ origin: 'http://localhost:5173' }));
 
-//app.use('/rota',authMiddleware, userRoutes);
-
 app.use('/users', userRoutes);
 app.use('/posts', postRoutes);
-//Preciso fazer o editar e o delete de ambos posts e funcionarios
+
 app.use('/', validateToken);
 
 export default app;
