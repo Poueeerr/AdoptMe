@@ -7,7 +7,7 @@ const createPost = async (token, title, tags, content, imagesUrl) =>{
     const author_id = decoded.id;
     if (!author_id || !content)  return { error: true, message: "author_id e content são obrigatórios" };
     
-    const response = await postsRepository.createPost({author_id, title,tags, content, imagesUrl})
+    const response = await postsRepository.createPost({author_id, title,    tags: typeof tags === 'string' ? tags.split(',').map(t => t.trim()) : tags, content, imagesUrl})
     return response
 }
 

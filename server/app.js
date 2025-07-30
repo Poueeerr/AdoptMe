@@ -15,6 +15,7 @@ const app = express();
 app.use(express.json());
 app.use(cors({ origin: 'http://localhost:5173' }));
 
+app.use('/uploads', express.static('uploads'));
 app.use('/users', userRoutes);
 app.use('/posts', postRoutes);
 

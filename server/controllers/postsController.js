@@ -3,13 +3,16 @@ import postsServices from "../services/postsServices.js";
 const createPost = async (req, res) =>{
     try{
         const authHeader = req.headers.authorization;
-        const {title, tags, content, imagesUrl} = req.body;
+        const {title, tags, content} = req.body;
         const token = authHeader.split(' ')[1];
+        
+        const imagesUrl = req.files?.map(file => file.path) || [];
 
         const response = await postsServices.createPost(token,title, tags, content, imagesUrl);
-        
         res.status(201).json(response);
     }catch(e){
+        console.error('[createPost ERROR]', e);
+
         res.status(500).json({ err: e.message })
     }
 }

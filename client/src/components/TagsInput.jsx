@@ -1,48 +1,85 @@
 import { useState } from "react";
 
+const predefinedTags = ["Cachorro", "Gato", "Urgente", "Filhote", "Vacina", "Castrado"];
+
 function TagsInput({ tags, setTags }) {
-  const [inputValue, setInputValue] = useState("");
+  const [input, setInput] = useState("");
+
+  const handleInputChange = (e) => {
+    setInput(e.target.value);
+  };
 
   const handleKeyDown = (e) => {
-    if (e.key === "Enter") {
+    if (e.key === "Enter" && input.trim()) {
       e.preventDefault();
-      const newTag = inputValue.trim();
-      if (newTag && !tags.includes(newTag)) {
-        setTags([...tags, newTag]);
-        setInputValue("");
+      const tagToAdd = input.trim();
+
+      if (
+        predefinedTags.includes(tagToAdd) &&
+        !tags.includes(tagToAdd)
+      ) {
+        setTags([...tags, tagToAdd]);
       }
+
+      setInput("");
+    }
+  };
+
+  const handleSelect = (tag) => {
+    if (!tags.includes(tag)) {
+      setTags([...tags, tag]);
     }
   };
 
   const removeTag = (tagToRemove) => {
-    setTags(tags.filter(tag => tag !== tagToRemove));
+    setTags(tags.filter((tag) => tag !== tagToRemove));
   };
+
+  const filteredTags = predefinedTags.filter(
+    (tag) =>
+      tag.toLowerCase().includes(input.toLowerCase()) &&
+      !tags.includes(tag)
+  );
 
   return (
     <div>
-        <div>
-            {tags.map((tag, index) => (
-                <span key={index} style={{
-                display: "inline-block",
-                padding: "2px 8px",
-                margin: "2px",
-                borderRadius: "12px",
-                cursor: "pointer",
-                userSelect: "none"
-                }}
-                onClick={() => removeTag(tag)}
-                >
-                {tag} &times;
-                </span>
-            ))}
-        </div>
-        <input
-            type="text"
-            value={inputValue}
-            onChange={e => setInputValue(e.target.value)}
-            onKeyDown={handleKeyDown}
-            placeholder="Digite e pressione Enter"
-        />
+      <div>
+        {tags.map((tag) => (
+          <div
+            key={tag}
+          >
+            {tag}
+            <button
+              type="button"
+              onClick={() => removeTag(tag)}
+            >
+              ×
+            </button>
+          </div>
+        ))}
+      </div>
+
+      <input
+        type="text"
+        value={input}
+        onChange={handleInputChange}
+        onKeyDown={handleKeyDown}
+        placeholder="Digite e aperte Enter"
+        style={{ width: "100%", padding: "8px" }}
+      />
+
+      {filteredTags.length > 0 && (
+        <ul>
+          {filteredTags.map((tag) => (
+            <li
+              key={tag}
+              onClick={() => handleSelect(tag)}
+            >
+              {tag}
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }
