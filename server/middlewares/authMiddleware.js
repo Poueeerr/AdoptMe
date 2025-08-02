@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken'
 const authMiddleware = (req, res, next) =>{
     const authHeader = req.headers.authorization;
     if(!authHeader){
-        return res.status(401).json({message: 'Token não fornecido'})
+        return res.json({ valid: false });
     }
     const token = authHeader.split(' ')[1];
     try {
@@ -12,7 +12,7 @@ const authMiddleware = (req, res, next) =>{
         req.user = decoded;
         next();
     }catch{
-        return res.status(401).json({ message: 'Token inválido ou expirado' });
+        return res.json({ valid: false });
     }   
 }
 

@@ -80,10 +80,14 @@ function CreatePost() {
 
   const checkLogged = async () => {
     try {
-      await api.get('/validate');
-      setAllowForm(true); 
+      const response = await api.get('/validate');
+      if(response.data.valid === true){
+        setAllowForm(true);
+      }else{
+        alert("Você precisa estar logado para realizar uma postagem");
+        setAllowForm(false);
+      }
     } catch (e) {
-      alert("Você precisa estar logado para realizar uma postagem");
       setAllowForm(false);
     }
   };
