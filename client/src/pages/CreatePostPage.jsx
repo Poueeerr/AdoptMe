@@ -1,13 +1,9 @@
 import CreatePost from "../components/CreatePost";
 
-
-function CreatePostPage(){
-    return(
-    <>
-    <div>
-      <CreatePost/>
-    </div>
-    </>)
+function CreatePostPage() {
+  return (
+      <CreatePost />
+  );
 }
 
 export default CreatePostPage;

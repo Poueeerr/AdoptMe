@@ -58,7 +58,7 @@ function Navbar() {
           <div className="flex items-center">
             <img
               className="h-8 w-auto"
-              src=""
+              src="/public/bone.png"
               alt="Logo"
             />
             <div className="hidden sm:block ml-6">

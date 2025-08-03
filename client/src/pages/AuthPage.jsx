@@ -103,7 +103,7 @@ function AuthPage() {
         email: userDataReg.email,
         password: userDataReg.password,
       });
-      setLoginView(true); 
+      setLoginView(true);
     } catch (e) {
       alert(e.message);
     }
@@ -112,14 +112,13 @@ function AuthPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-cyan-400 to-blue-600 p-6">
       <div className="flex w-full max-w-5xl rounded-xl shadow-lg overflow-hidden bg-white">
-        <div className="hidden md:flex flex-1 bg-blue-500 justify-center items-center p-10">
+        <div className="hidden md:flex flex-1">
           <img
-            src="/path/to/your/image.png"
+            src="../public/kitty.jpg"
             alt="Login Illustration"
-            className="max-w-full max-h-full"
+            className="w-full h-full object-cover"
           />
         </div>
-
 
         <div className="flex flex-col flex-1 p-10 min-h-[700px]">
           {loginView ? (
@@ -132,7 +131,9 @@ function AuthPage() {
                 className="flex flex-col gap-6 flex-grow justify-center"
               >
                 <div className="flex flex-col gap-1">
-                  <label className="text-sm font-medium text-gray-700">Username</label>
+                  <label className="text-sm font-medium text-gray-700">
+                    Username
+                  </label>
                   <input
                     type="email"
                     placeholder="@mail.com"
@@ -145,14 +146,19 @@ function AuthPage() {
                 </div>
 
                 <div className="flex flex-col gap-1">
-                  <label className="text-sm font-medium text-gray-700">Password</label>
+                  <label className="text-sm font-medium text-gray-700">
+                    Password
+                  </label>
                   <div className="relative w-full">
                     <input
                       type={showPassword ? "text" : "password"}
                       placeholder="password"
                       value={userDataLog.password}
                       onChange={(e) =>
-                        setUserDataLog({ ...userDataLog, password: e.target.value })
+                        setUserDataLog({
+                          ...userDataLog,
+                          password: e.target.value,
+                        })
                       }
                       className="w-full p-3 border border-gray-300 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
@@ -167,8 +173,10 @@ function AuthPage() {
                 </div>
 
                 <div className="flex items-center justify-between text-sm text-gray-600">
-                  
-                  <button type="button" className="text-blue-600 hover:underline">
+                  <button
+                    type="button"
+                    className="text-blue-600 hover:underline"
+                  >
                     Esqueceu a Senha?
                   </button>
                 </div>
@@ -189,18 +197,23 @@ function AuthPage() {
                 onClick={() => setLoginView(false)}
                 className="cursor-pointer text-center mt-6 text-blue-600 hover:underline"
               >
-                Não Tem Uma Conta? <span className="font-semibold">Inscrever-se</span>
+                Não Tem Uma Conta?{" "}
+                <span className="font-semibold">Inscrever-se</span>
               </p>
             </>
           ) : (
             <>
-              <h1 className="text-3xl font-bold mb-6 text-center text-gray-900">Cadastro</h1>
+              <h1 className="text-3xl font-bold mb-6 text-center text-gray-900">
+                Cadastro
+              </h1>
               <form
                 onSubmit={handleRegister}
                 className="flex flex-col gap-6 flex-grow justify-center"
               >
                 <div className="flex flex-col gap-1">
-                  <label className="text-sm font-medium text-gray-700">Nome</label>
+                  <label className="text-sm font-medium text-gray-700">
+                    Nome
+                  </label>
                   <input
                     type="text"
                     placeholder="Nome"
@@ -212,7 +225,9 @@ function AuthPage() {
                   />
                 </div>
                 <div className="flex flex-col gap-1">
-                  <label className="text-sm font-medium text-gray-700">Email</label>
+                  <label className="text-sm font-medium text-gray-700">
+                    Email
+                  </label>
                   <input
                     type="email"
                     placeholder="Email"
@@ -224,7 +239,9 @@ function AuthPage() {
                   />
                 </div>
                 <div className="flex flex-col gap-1">
-                  <label className="text-sm font-medium text-gray-700">Senha</label>
+                  <label className="text-sm font-medium text-gray-700">
+                    Senha
+                  </label>
                   <div className="relative w-full">
                     <input
                       type={showPassword ? "text" : "password"}
@@ -248,7 +265,9 @@ function AuthPage() {
                   </div>
                 </div>
                 <div className="flex flex-col gap-1">
-                  <label className="text-sm font-medium text-gray-700">Telefone</label>
+                  <label className="text-sm font-medium text-gray-700">
+                    Telefone
+                  </label>
                   <input
                     type="tel"
                     placeholder="Telefone"
