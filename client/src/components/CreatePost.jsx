@@ -118,7 +118,7 @@ function CreatePost() {
         locationId: "",
       });
       clearFiles();
-      navigate("/adotar", { replace: true });
+      navigate("/userposts", { replace: true });
 
     } catch (e) {
       console.error(e);

@@ -7,7 +7,7 @@ function Navbar() {
   const [name, setName] = useState("");
   const [hasName, setHasName] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
+  const [valid, setValid] = useState(false);
   useEffect(() => {
     const clearSession = () => {
       localStorage.removeItem("token");
@@ -25,6 +25,7 @@ function Navbar() {
         if (isValid && storedName) {
           setName(storedName);
           setHasName(true);
+          setValid(true);
         } else {
           clearSession();
         }
@@ -68,6 +69,10 @@ function Navbar() {
               <NavLink to="/divulgar" className={linkClass}>
                 Divulgar Adoção
               </NavLink>
+
+             {valid ? (<NavLink to="/userposts" className={linkClass}>
+                Minhas Divulgações
+              </NavLink>) : (null)} 
             </div>
           </div>
 

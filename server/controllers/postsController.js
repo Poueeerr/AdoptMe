@@ -68,4 +68,25 @@ async function getPostsFiltered(req, res) {
   }
 }
 
-export default {createPost, getPostsPage, getSize, getUserInfo, getPostsFiltered}
+const getByUser = async (req, res) => {
+    try{
+        const {id} = req.params;
+        const posts = await postsServices.getByUser(id);
+        res.status(200).json(posts); 
+    }catch(e){
+        res.status(500).json({ err: e.message })
+    }
+}
+
+const deletePost = async (req, res) => {
+    try{
+        const {id} = req.params;
+        const response = await postsServices.deletePost(id);
+        res.status(200).json(response); 
+    }catch(e){
+        res.status(500).json({ err: e.message })
+    }
+}
+
+
+export default {createPost, getPostsPage, getSize, getUserInfo, getPostsFiltered, getByUser, deletePost}

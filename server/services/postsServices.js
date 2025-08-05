@@ -67,4 +67,13 @@ function convertDotNotationFilters(filters) {
   return prismaFilters;
 }
 
-export default { createPost, getPostsPage, postsSize, getUserInfo, getPostsFiltered };
+async function getByUser(id){
+  return await postsRepository.getByUser(id);
+}
+
+async function deletePost(id) {
+  const numberId = Number(id);
+  return await postsRepository.deletePost(numberId);
+}
+
+export default { createPost, getPostsPage, postsSize, getUserInfo, getPostsFiltered, getByUser, deletePost };

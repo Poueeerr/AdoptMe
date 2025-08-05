@@ -74,4 +74,22 @@ async function findPosts({ filters, skip, take }) {
   });
 }
 
-export default { getPostsPage, createPost, postsSize, getUserInfo, findPosts };
+async function getByUser(id) {
+  return prisma.posts.findMany({
+    where:{
+      author_id: id 
+    },
+        include: {
+      location: true,
+    },
+
+  })
+}
+
+async function deletePost(id) {
+  return await prisma.posts.delete({
+    where: { id }
+  })
+}
+
+export default { getPostsPage, createPost, postsSize, getUserInfo, findPosts, getByUser, deletePost };
