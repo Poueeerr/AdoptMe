@@ -3,12 +3,12 @@ import postsServices from "../services/postsServices.js";
 const createPost = async (req, res) =>{
     try{
         const authHeader = req.headers.authorization;
-        const {title, tags, content} = req.body;
+        const {title, tags, content, location_id} = req.body;
         const token = authHeader.split(' ')[1];
         
         const imagesUrl = req.files?.map(file => file.path) || [];
 
-        const response = await postsServices.createPost(token,title, tags, content, imagesUrl);
+        const response = await postsServices.createPost(token,title, tags, content, imagesUrl, location_id);
         res.status(201).json(response);
     }catch(e){
         console.error('[createPost ERROR]', e);
@@ -47,4 +47,25 @@ const getUserInfo = async(req,res)=>{
         res.status(500).json({ err: e.message })
     }
 }
-export default {createPost, getPostsPage, getSize, getUserInfo}
+
+async function getPostsFiltered(req, res) {
+  try {
+    const { page, state, city, tags } = req.query;
+
+    const tagsArray = tags ? tags.split(",") : [];
+
+    const posts = await postsServices.getPostsFiltered({
+      page: Number(page) || 1,
+      state,
+      city,
+      tags: tagsArray,
+    });
+
+    return res.json(posts);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: "Erro ao buscar posts" });
+  }
+}
+
+export default {createPost, getPostsPage, getSize, getUserInfo, getPostsFiltered}

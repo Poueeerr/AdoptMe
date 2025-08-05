@@ -21,6 +21,7 @@ model User{
   phone String 
   isVerified Boolean @default(false)
   posts Posts[]
+  
 }
 
 model Posts {
@@ -31,4 +32,14 @@ model Posts {
   tags String[]
   content String
   imagesUrl String[]  
+
+  location Locations @relation(fields: [location_id], references: [id])
+  location_id Int
+}
+
+model Locations {
+  id    Int    @id @default(autoincrement())
+  state String
+  city  String
+  posts Posts[]
 }
