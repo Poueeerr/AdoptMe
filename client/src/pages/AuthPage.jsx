@@ -50,7 +50,7 @@ function AuthPage() {
   useEffect(() => {
     const checkLogin = async () => {
       const logged = await isLogged();
-      if (logged) nav("/");
+      if (logged) nav("/adotar");
     };
     checkLogin();
   }, [nav]);
@@ -132,12 +132,13 @@ function AuthPage() {
               >
                 <div className="flex flex-col gap-1">
                   <label className="text-sm font-medium text-gray-700">
-                    Username
+                    Email
                   </label>
                   <input
                     type="email"
                     placeholder="@mail.com"
                     value={userDataLog.email}
+                    
                     onChange={(e) =>
                       setUserDataLog({ ...userDataLog, email: e.target.value })
                     }
@@ -147,12 +148,12 @@ function AuthPage() {
 
                 <div className="flex flex-col gap-1">
                   <label className="text-sm font-medium text-gray-700">
-                    Password
+                    Senha
                   </label>
                   <div className="relative w-full">
                     <input
                       type={showPassword ? "text" : "password"}
-                      placeholder="password"
+                      placeholder="********"
                       value={userDataLog.password}
                       onChange={(e) =>
                         setUserDataLog({

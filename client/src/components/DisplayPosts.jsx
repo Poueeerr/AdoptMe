@@ -36,107 +36,93 @@ function DisplayPosts({ page }) {
   const [modalOpen, setModalOpen] = useState(false);
   const [modalPhone, setModalPhone] = useState("");
 
-  // Filtros
-  const [filters, setFilters] = useState({
-    state: "",
-    city: "",
-    tags: [],
-  });
-
-  // Estados e cidades para os selects
+  const [filters, setFilters] = useState({ state: "", city: "", tags: [] });
   const [states, setStates] = useState([]);
   const [cities, setCities] = useState([]);
 
-  // Buscar estados ao montar componente
+  // ───── Effects ─────
   useEffect(() => {
-    async function fetchStates() {
-      try {
-        const res = await api.get("/locations/states");
-        setStates(res.data);
-      } catch (e) {
-        console.error("Erro ao buscar estados:", e);
-      }
-    }
     fetchStates();
   }, []);
 
-  // Buscar cidades quando estado mudar
   useEffect(() => {
-    async function fetchCities() {
-      if (filters.state) {
-        try {
-          const res = await api.get(`/locations/getCity/${filters.state}`);
-          setCities(res.data);
-        } catch (e) {
-          console.error("Erro ao buscar cidades:", e);
-          setCities([]);
-        }
-      } else {
-        setCities([]);
-      }
-    }
-    fetchCities();
+    if (filters.state) fetchCities(filters.state);
+    else setCities([]);
   }, [filters.state]);
 
-  // Buscar posts filtrados sempre que page ou filters mudarem
   useEffect(() => {
-    async function fetchPosts() {
-      try {
-        const query = new URLSearchParams();
-        if (page) query.append("page", page);
-        if (filters.state) query.append("state", filters.state);
-        if (filters.city) query.append("city", filters.city);
-        if (filters.tags.length > 0)
-          query.append("tags", filters.tags.join(","));
-
-        // Endpoint ajustado para filtro
-        const response = await api.get(`/posts/filter?${query.toString()}`);
-        setPosts(response.data);
-      } catch (e) {
-        console.error("Erro ao buscar posts:", e);
-      }
-    }
     fetchPosts();
   }, [page, filters]);
 
-  // Verifica login para contato
+  // ───── API Calls ─────
+  const fetchStates = async () => {
+    try {
+      const res = await api.get("/locations/states");
+      setStates(res.data);
+    } catch (e) {
+      console.error("Erro ao buscar estados:", e);
+    }
+  };
+
+  const fetchCities = async (state) => {
+    try {
+      const res = await api.get(`/locations/getCity/${state}`);
+      setCities(res.data);
+    } catch (e) {
+      console.error("Erro ao buscar cidades:", e);
+    }
+  };
+
+  const fetchPosts = async () => {
+    try {
+      const query = new URLSearchParams();
+      if (page) query.append("page", page);
+      if (filters.state) query.append("state", filters.state);
+      if (filters.city) query.append("city", filters.city);
+      if (filters.tags.length > 0) query.append("tags", filters.tags.join(","));
+      const res = await api.get(`/posts/filter?${query.toString()}`);
+      setPosts(res.data);
+    } catch (e) {
+      console.error("Erro ao buscar posts:", e);
+    }
+  };
+
   const checkLogged = async () => {
     try {
-      const response = await api.get("/validate");
-      return response.data.valid === true;
-    } catch (e) {
+      const res = await api.get("/validate");
+      return res.data.valid === true;
+    } catch {
       return false;
     }
   };
 
-  // Buscar telefone e abrir modal
-  const handleGetUserContact = async (id) => {
+  const handleGetUserContact = async (postId) => {
+    if (!(await checkLogged())) {
+      alert("Você precisa estar logado para entrar em contato");
+      return;
+    }
+
     try {
-      if (await checkLogged()) {
-        const response = await api.get(`/posts/getUserInfo/${id}`);
-        const phone = response.data.author.phone;
-        setContacts((prev) => ({ ...prev, [id]: phone }));
-        setModalPhone(phone);
-        setModalOpen(true);
-      } else {
-        alert("Você precisa estar logado para entrar em contato");
-      }
+      const res = await api.get(`/posts/getUserInfo/${postId}`);
+      const phone = res.data.author.phone;
+      setContacts((prev) => ({ ...prev, [postId]: phone }));
+      setModalPhone(phone);
+      setModalOpen(true);
     } catch (e) {
-      console.log(e);
+      console.error(e);
     }
   };
 
-  // Alterna tag nos filtros
   const toggleTag = (tag) => {
-    setFilters((prev) => {
-      if (prev.tags.includes(tag)) {
-        return { ...prev, tags: prev.tags.filter((t) => t !== tag) };
-      } else {
-        return { ...prev, tags: [...prev.tags, tag] };
-      }
-    });
+    setFilters((prev) => ({
+      ...prev,
+      tags: prev.tags.includes(tag)
+        ? prev.tags.filter((t) => t !== tag)
+        : [...prev.tags, tag],
+    }));
   };
 
+  // ───── Render ─────
   return (
     <>
       {/* Filtros */}
@@ -144,8 +130,8 @@ function DisplayPosts({ page }) {
         <h2 className="text-xl font-semibold mb-4 text-gray-800">
           Filtrar resultados
         </h2>
-
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
+          {/* Estado */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Estado
@@ -155,17 +141,18 @@ function DisplayPosts({ page }) {
               onChange={(e) =>
                 setFilters({ ...filters, state: e.target.value, city: "" })
               }
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+              className="w-full border rounded-lg px-3 py-2"
             >
               <option value="">Selecione um estado</option>
-              {states.map((stateObj) => (
-                <option key={stateObj.state} value={stateObj.state}>
-                  {stateObj.state}
+              {states.map((s) => (
+                <option key={s.state} value={s.state}>
+                  {s.state}
                 </option>
               ))}
             </select>
           </div>
 
+          {/* Cidade */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Cidade
@@ -174,18 +161,19 @@ function DisplayPosts({ page }) {
               value={filters.city}
               onChange={(e) => setFilters({ ...filters, city: e.target.value })}
               disabled={!filters.state}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 disabled:opacity-50"
+              className="w-full border rounded-lg px-3 py-2 disabled:opacity-50"
             >
               <option value="">Selecione uma cidade</option>
-              {cities.map((cityObj) => (
-                <option key={cityObj.city} value={cityObj.city}>
-                  {cityObj.city}
+              {cities.map((c) => (
+                <option key={c.city} value={c.city}>
+                  {c.city}
                 </option>
               ))}
             </select>
           </div>
         </div>
 
+        {/* Tags */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Tags
@@ -195,10 +183,10 @@ function DisplayPosts({ page }) {
               <button
                 key={tag}
                 onClick={() => toggleTag(tag)}
-                className={`px-3 py-1 text-sm rounded-full border transition-colors ${
+                className={`px-3 py-1 text-sm rounded-full border ${
                   filters.tags.includes(tag)
                     ? "bg-blue-500 text-white border-blue-600"
-                    : "bg-gray-100 border-gray-300 hover:bg-gray-200 text-gray-800"
+                    : "bg-gray-100 text-gray-800 border-gray-300 hover:bg-gray-200"
                 }`}
               >
                 {tag}
@@ -208,10 +196,10 @@ function DisplayPosts({ page }) {
         </div>
       </div>
 
-      {/* Grid de posts */}
-      <div className="grid grid-cols-5 gap-4 mt-4">
+      {/* Cards de post */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 mt-4">
         {posts.length === 0 && (
-          <p className="col-span-5 text-center text-gray-500">
+          <p className="col-span-full text-center text-gray-500">
             Nenhum post encontrado.
           </p>
         )}
@@ -221,39 +209,36 @@ function DisplayPosts({ page }) {
             key={post.id}
             className="bg-white rounded-xl shadow-lg flex flex-col p-4"
           >
-            <div className="flex justify-center mb-4 ">
-              {post.imagesUrl?.length > 0 && (
-                <Swiper
-                  modules={[Navigation, Pagination]}
-                  navigation
-                  pagination={{ clickable: true }}
-                  spaceBetween={10}
-                  slidesPerView={1}
-                  className="w-full h-[300px] mb-4"
-                >
-                  {post.imagesUrl.map((image, i) => (
-                    <SwiperSlide key={i}>
-                      <img
-                        src={`http://localhost:3000/${image}`}
-                        alt={`Imagem ${i + 1} do post`}
-                        className="w-full h-full object-cover rounded-md shadow-lg"
-                      />
-                    </SwiperSlide>
-                  ))}
-                </Swiper>
-              )}
-            </div>
+            {post.imagesUrl?.length > 0 && (
+              <Swiper
+                modules={[Navigation, Pagination]}
+                navigation
+                pagination={{ clickable: true }}
+                className="w-full h-[300px] mb-4"
+              >
+                {post.imagesUrl.map((img, i) => (
+                  <SwiperSlide key={i}>
+                    <img
+                      src={`http://localhost:3000/${img}`}
+                      alt={`Imagem ${i + 1}`}
+                      className="w-full h-full object-cover rounded-md"
+                    />
+                  </SwiperSlide>
+                ))}
+              </Swiper>
+            )}
 
             <h3 className="text-xl font-bold mb-2">{post.title}</h3>
             <p className="mb-4">{post.content}</p>
-            <p className="mb-4  text-gray-600">
+            <p className="mb-4 text-gray-600">
               {post.location?.city}, {post.location?.state}
             </p>
+
             <div className="flex flex-wrap gap-3">
               {post.tags.map((tag) => (
                 <span
                   key={tag}
-                  className="rounded-full bg-gray-200 text-gray-700 px-3 py-1 text-sm shadow-sm hover:bg-gray-300 transition-colors cursor-default"
+                  className="rounded-full bg-gray-200 text-gray-700 px-3 py-1 text-sm"
                 >
                   {tag}
                 </span>
@@ -270,6 +255,46 @@ function DisplayPosts({ page }) {
         ))}
       </div>
 
+      {/* Modal de contato */}
+      {modalOpen && (
+        <div
+          className="fixed inset-0 bg-black/90 flex justify-center items-center z-50"
+          onClick={() => setModalOpen(false)}
+        >
+          <div
+            className="bg-white rounded-lg p-6 w-full max-w-md shadow-lg relative mx-4"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h2 className="text-lg font-bold mb-4">Contato</h2>
+            <p className="text-lg font-medium text-gray-700 text-center mb-4">
+              Telefone: <span className="font-semibold">{modalPhone}</span>
+            </p>
+
+            <button
+              onClick={() => {
+                const msg = encodeURIComponent(
+                  "Olá, gostaria de mais informações sobre a adoção do pet!"
+                );
+                const phone = modalPhone.replace(/\D/g, "");
+                window.open(`https://wa.me/55${phone}?text=${msg}`, "_blank");
+              }}
+              className="flex items-center gap-2 bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition mx-auto"
+            >
+              <FaWhatsapp className="text-2xl" />
+              Enviar mensagem
+            </button>
+
+            <button
+              onClick={() => setModalOpen(false)}
+              className="absolute top-2 right-2 text-red-600 text-xl"
+            >
+              ✕
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de contato */}
       {modalOpen && (
         <div
           className="fixed inset-0 bg-black/90 flex justify-center items-center z-50"
@@ -280,48 +305,29 @@ function DisplayPosts({ page }) {
             onClick={(e) => e.stopPropagation()}
           >
             <h2 className="text-lg font-bold mb-4">Contato</h2>
-            <div className="flex flex-col items-center text-center space-y-4">
-              <p className="text-lg font-medium text-gray-700">
-                Telefone para contato:{" "}
-                <span className="font-semibold text-black">{modalPhone}</span>
-              </p>
+            <p className="text-lg font-medium text-gray-700 text-center mb-4">
+              Telefone: <span className="font-semibold">{modalPhone}</span>
+            </p>
 
-              <div className="relative group">
-                <button
-                  onClick={() => {
-                    const message =
-                      "Olá, gostaria de mais informações sobre a adoção do pet!";
-                    const encodedMessage = encodeURIComponent(message);
-                    const phone = modalPhone.replace(/\D/g, "");
-                    window.open(
-                      `https://wa.me/55${phone}?text=${encodedMessage}`,
-                      "_blank"
-                    );
-                  }}
-                  className="flex items-center gap-2 bg-green-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-green-600 transition"
-                >
-                  <FaWhatsapp className="text-2xl" />
-                  Enviar mensagem
-                </button>
-
-                <div className="w-max absolute -top-10 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-sm px-3 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity z-50 pointer-events-none">
-                  {`https://wa.me/55${modalPhone}`}
-                </div>
-              </div>
-            </div>
+            <button
+              onClick={() => {
+                const msg = encodeURIComponent(
+                  "Olá, gostaria de mais informações sobre a adoção do pet!"
+                );
+                const phone = modalPhone.replace(/\D/g, "");
+                window.open(`https://wa.me/55${phone}?text=${msg}`, "_blank");
+              }}
+              className="flex items-center gap-2 bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition mx-auto"
+            >
+              <FaWhatsapp className="text-2xl" />
+              Enviar mensagem
+            </button>
 
             <button
               onClick={() => setModalOpen(false)}
-              className=" text-xl absolute top-2 right-2 text-red-600 hover:text-gray-900 cursor-pointer"
-              aria-label="Fechar modal"
+              className="absolute top-2 right-2 text-red-600 text-xl"
             >
               ✕
-            </button>
-            <button
-              onClick={() => setModalOpen(false)}
-              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-            >
-              Fechar
             </button>
           </div>
         </div>
