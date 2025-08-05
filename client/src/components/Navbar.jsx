@@ -56,7 +56,7 @@ function Navbar() {
       <div className="w-full px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           <div className="flex items-center">
-            <img className="h-8 w-auto" src="/public/bone.png" alt="Logo" />
+            <img className="h-8 w-auto" src="/bone.png" alt="Logo" />
 
             <div className="hidden sm:flex space-x-6 ml-6">
               <NavLink to="/" className={linkClass}>

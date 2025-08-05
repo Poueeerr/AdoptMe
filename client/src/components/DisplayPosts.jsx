@@ -219,7 +219,7 @@ function DisplayPosts({ page }) {
                 {post.imagesUrl.map((img, i) => (
                   <SwiperSlide key={i}>
                     <img
-                      src={`http://localhost:3000/${img}`}
+                      src={`https://backend-adopt.onrender.com/${img}`}
                       alt={`Imagem ${i + 1}`}
                       className="w-full h-full object-cover rounded-md"
                     />

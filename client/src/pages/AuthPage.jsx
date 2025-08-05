@@ -114,7 +114,7 @@ function AuthPage() {
       <div className="flex w-full max-w-5xl rounded-xl shadow-lg overflow-hidden bg-white">
         <div className="hidden md:flex flex-1">
           <img
-            src="../public/kitty.jpg"
+            src="kitty.jpg"
             alt="Login Illustration"
             className="w-full h-full object-cover"
           />

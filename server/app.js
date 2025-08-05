@@ -13,7 +13,7 @@ dotenv.config({ path: resolve(__dirname, '../.env') });
 const app = express();
 
 app.use(express.json());
-app.use(cors({ origin: 'http://localhost:5173' }));
+app.use(cors({ origin: 'http://localhost:5173' })); //https://frontend-adopt.vercel.app
 
 app.use('/uploads', express.static('uploads'));
 app.use('/users', userRoutes);

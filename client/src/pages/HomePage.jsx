@@ -1,4 +1,9 @@
+import { useNavigate } from "react-router-dom";
+
+
 function Home() {
+    const navigate = useNavigate();
+
   return (
     <div className="bg-blue-100">
       
@@ -10,7 +15,7 @@ function Home() {
           Adoção responsável com <span className="text-cyan-500">amor e cuidado</span>
         </h1>
         <img
-          src="../public/doggy.jpg" 
+          src="doggy.jpg" 
           alt="Pet feliz"
           className="mx-auto w-72 rounded-xl mb-8 shadow-lg"
         />
@@ -19,10 +24,10 @@ function Home() {
           Aqui você pode divulgar, encontrar e ajudar pets a terem uma nova chance.
         </p>
         <button
-          onClick={() => window.location.href = "/adotar"}
+          onClick={() => navigate("/adotar", { replace: true })}
           className="mt-8 bg-cyan-500 text-white px-8 py-3 rounded-md font-semibold hover:bg-cyan-600 transition"
         >
-          Comece a Adoção
+          Adote
         </button>
       </section>
 

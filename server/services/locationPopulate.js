@@ -36,7 +36,7 @@ async function busca() {
 
 async function inserirDados(locations) {
   const pool = new Pool({
-    connectionString: "postgresql://postgres:postgres@localhost:5432/blogbackend",
+    connectionString: "postgresql://adopt_me_user:EG6xEqS6VdgaT8AiVjPGzvPgmHTfyEgv@dpg-d293hbqdbo4c73deuk3g-a.virginia-postgres.render.com/adopt_me?sslmode=require",
   });
 
   try {
