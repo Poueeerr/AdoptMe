@@ -88,5 +88,33 @@ const deletePost = async (req, res) => {
     }
 }
 
+export async function updatePostController(req, res) {
+  const postId = Number(req.params.id);
+  const { title, content, tags, location_id } = req.body;
 
-export default {createPost, getPostsPage, getSize, getUserInfo, getPostsFiltered, getByUser, deletePost}
+  try {
+    const updateData = {
+      title,
+      content,
+      tags: Array.isArray(tags)
+        ? tags
+        : typeof tags === "string"
+        ? tags.split(",").map((t) => t.trim())
+        : [],
+      location_id: Number(location_id),
+    };
+
+    if (req.files?.length > 0) {
+      updateData.imagesUrl = req.files.map((file) => file.path);
+    }
+
+    const updatedPost = await postsServices.updatePost(postId, updateData);
+    res.status(200).json(updatedPost);
+  } catch (error) {
+    console.error("[updatePostController ERROR]", error);
+    res.status(500).json({ error: error.message });
+  }
+}
+
+
+export default {createPost, getPostsPage, getSize, getUserInfo, getPostsFiltered, getByUser, deletePost, updatePostController}

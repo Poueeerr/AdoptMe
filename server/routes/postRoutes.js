@@ -15,5 +15,7 @@ router.get('/getByUser/:id',authMiddleware, postsController.getByUser);
 router.delete('/deletePost/:id',authMiddleware, postsController.deletePost);
 
 router.get("/filter", postsController.getPostsFiltered);
+router.put("/edit/:id", authMiddleware, upload.array('files'), postsController.updatePostController);
+
 
 export default router;

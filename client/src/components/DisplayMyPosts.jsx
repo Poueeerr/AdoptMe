@@ -5,11 +5,13 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
+import EditPostModal from "./EditPostModal";
 import "swiper/css/pagination";
 import { jwtDecode } from "jwt-decode";
 
 function DisplayMyPosts() {
   const [posts, setPosts] = useState([]);
+  const [editingPost, setEditingPost] = useState(null);
 
   function getUserIdFromToken() {
     const token = localStorage.getItem("token");
@@ -49,6 +51,14 @@ function DisplayMyPosts() {
 
   return (
     <>
+      {editingPost && editingPost.title && (
+        <EditPostModal
+          post={editingPost}
+          onClose={() => setEditingPost(null)}
+          onUpdate={fetchData}
+        />
+      )}
+
       {posts.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 mt-4">
           {posts.map((post) => (
@@ -66,10 +76,9 @@ function DisplayMyPosts() {
                   {post.imagesUrl.map((img, i) => (
                     <SwiperSlide key={i}>
                       <img
-//                      src={`https://backend-adopt.onrender.com/${img}`}
+                        //                      src={`https://backend-adopt.onrender.com/${img}`}
                         alt={`Imagem ${i + 1}`}
                         src={`http://localhost:3000/${img}`}
-
                         className="w-full h-full object-cover rounded-md"
                       />
                     </SwiperSlide>
@@ -96,9 +105,15 @@ function DisplayMyPosts() {
               <div>
                 <button
                   onClick={() => handleDelete(post.id)}
-                  className="mt-4 text-red-700 font-bold hover:underline cursor-pointer"
+                  className="mt-4 text-red-700 font-bold hover:text-red-900 cursor-pointer"
                 >
                   DELETAR
+                </button>
+                <button
+                  onClick={() => setEditingPost(post)}
+                  className="mt-2 text-blue-700 font-bold hover:text-blue-900 cursor-pointer ml-10"
+                >
+                  EDITAR
                 </button>
               </div>
             </div>

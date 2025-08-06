@@ -76,4 +76,8 @@ async function deletePost(id) {
   return await postsRepository.deletePost(numberId);
 }
 
-export default { createPost, getPostsPage, postsSize, getUserInfo, getPostsFiltered, getByUser, deletePost };
+async function updatePost(postId, updateData) {
+  return await postsRepository.updatePost(postId, updateData);
+}
+
+export default { createPost, getPostsPage, postsSize, getUserInfo, getPostsFiltered, getByUser, deletePost, updatePost };

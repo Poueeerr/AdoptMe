@@ -92,4 +92,20 @@ async function deletePost(id) {
   })
 }
 
-export default { getPostsPage, createPost, postsSize, getUserInfo, findPosts, getByUser, deletePost };
+async function updatePost(postId, data) {
+  const updated = await prisma.posts.update({
+    where: {
+      id: postId,
+    },
+    data: {
+      title: data.title,
+      tags: data.tags,
+      content: data.content,
+      imagesUrl: data.imagesUrl,
+      location_id: data.location_id,
+    },
+  });
+
+  return updated;
+}
+export default { getPostsPage, createPost, postsSize, getUserInfo, findPosts, getByUser, deletePost, updatePost };
