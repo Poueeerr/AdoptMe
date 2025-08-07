@@ -67,7 +67,9 @@ function CreatePost() {
     });
 
     if (invalidFiles.length > 0) {
-      alert(`Os seguintes arquivos não são permitidos:\n${invalidFiles.join("\n")}`);
+      alert(
+        `Os seguintes arquivos não são permitidos:\n${invalidFiles.join("\n")}`
+      );
       clearFiles();
     }
 
@@ -119,7 +121,6 @@ function CreatePost() {
       });
       clearFiles();
       navigate("/userposts", { replace: true });
-
     } catch (e) {
       console.error(e);
       alert("Erro ao criar post");
@@ -131,14 +132,20 @@ function CreatePost() {
   return (
     <div className="min-h-screen bg-gradient-to-r from-cyan-200 to-blue-500 p-6">
       <div className="max-w-3xl mx-auto mt-10 p-6 bg-white rounded-xl shadow-md border border-gray-200">
-        <h2 className="text-3xl font-bold mb-6 text-center text-blue-600">Divulgar Adoção</h2>
+        <h2 className="text-3xl font-bold mb-6 text-center text-blue-600">
+          Divulgar Adoção
+        </h2>
         <form onSubmit={handlePostForm} className="space-y-6">
           <div>
-            <label className="block font-medium mb-1">Nome do seu pet <span className="text-red-500">*</span></label>
+            <label className="block font-medium mb-1">
+              Nome do seu pet <span className="text-red-500">*</span>
+            </label>
             <input
               type="text"
               value={postForm.title}
-              onChange={(e) => setPostForm({ ...postForm, title: e.target.value })}
+              onChange={(e) =>
+                setPostForm({ ...postForm, title: e.target.value })
+              }
               placeholder="Ex: Mia"
               required
               className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
@@ -146,7 +153,10 @@ function CreatePost() {
           </div>
 
           <div>
-            <label className="block font-medium mb-1">Coloque uma foto bem bonita dele! <span className="text-red-500">*</span></label>
+            <label className="block font-medium mb-1">
+              Coloque uma foto bem bonita dele!{" "}
+              <span className="text-red-500">*</span>
+            </label>
             <input
               type="file"
               accept=".png, .jpg, .jpeg"
@@ -158,8 +168,15 @@ function CreatePost() {
             {images.length > 0 && (
               <div className="mt-4 flex flex-wrap gap-4">
                 {images.map((img, idx) => (
-                  <div key={idx} className="relative w-[200px] h-[200px] rounded-md border overflow-hidden">
-                    <img src={URL.createObjectURL(img)} alt={`preview-${idx}`} className="w-full h-full object-cover" />
+                  <div
+                    key={idx}
+                    className="relative w-[200px] h-[200px] rounded-md border overflow-hidden"
+                  >
+                    <img
+                      src={URL.createObjectURL(img)}
+                      alt={`preview-${idx}`}
+                      className="w-full h-full object-cover"
+                    />
                     <button
                       type="button"
                       onClick={() => removeImage(idx)}
@@ -183,15 +200,22 @@ function CreatePost() {
           </div>
 
           <div>
-            <label className="block font-medium mb-1">Características <span className="text-red-500">*</span></label>
+            <label className="block font-medium mb-1">
+              Características <span className="text-red-500">*</span>
+            </label>
             <TagsInput tags={postForm.tags} setTags={setTags} />
           </div>
 
           <div>
-            <label className="block font-medium mb-1">Fale um pouco sobre seu pet! <span className="text-red-500">*</span></label>
+            <label className="block font-medium mb-1">
+              Fale um pouco sobre seu pet!{" "}
+              <span className="text-red-500">*</span>
+            </label>
             <textarea
               value={postForm.content}
-              onChange={(e) => setPostForm({ ...postForm, content: e.target.value })}
+              onChange={(e) =>
+                setPostForm({ ...postForm, content: e.target.value })
+              }
               placeholder="Descreva seu animalzinho da melhor forma!"
               required
               rows={6}
@@ -200,15 +224,24 @@ function CreatePost() {
           </div>
 
           <div>
-            <label className="block font-medium mb-1">Estado em que está! <span className="text-red-500">*</span></label>
+            <label className="block font-medium mb-1">
+              Estado em que está! <span className="text-red-500">*</span>
+            </label>
             <select
               value={postForm.state}
               onChange={async (e) => {
                 const selectedState = e.target.value;
-                setPostForm({ ...postForm, state: selectedState, city: "", locationId: "" });
+                setPostForm({
+                  ...postForm,
+                  state: selectedState,
+                  city: "",
+                  locationId: "",
+                });
 
                 try {
-                  const res = await api.get(`/locations/getCity/${selectedState}`);
+                  const res = await api.get(
+                    `/locations/getCity/${selectedState}`
+                  );
                   const cityNames = res.data.map((loc) => loc.city);
                   setCities(cityNames);
                 } catch (e) {
@@ -220,13 +253,17 @@ function CreatePost() {
             >
               <option value="">Selecione um estado</option>
               {states.map((state) => (
-                <option key={state} value={state}>{state}</option>
+                <option key={state} value={state}>
+                  {state}
+                </option>
               ))}
             </select>
           </div>
 
           <div>
-            <label className="block font-medium mb-1">Cidade em que está! <span className="text-red-500">*</span></label>
+            <label className="block font-medium mb-1">
+              Cidade em que está! <span className="text-red-500">*</span>
+            </label>
             <select
               value={postForm.city}
               onChange={async (e) => {
@@ -235,8 +272,13 @@ function CreatePost() {
 
                 if (postForm.state && selectedCity) {
                   try {
-                    const res = await api.get(`/locations/${postForm.state}/${selectedCity}`);
-                    setPostForm((prev) => ({ ...prev, locationId: res.data.id }));
+                    const res = await api.get(
+                      `/locations/${postForm.state}/${selectedCity}`
+                    );
+                    setPostForm((prev) => ({
+                      ...prev,
+                      locationId: res.data.id,
+                    }));
                   } catch (err) {
                     console.error("Erro ao buscar locationId:", err);
                   }
@@ -252,7 +294,9 @@ function CreatePost() {
             >
               <option value="">Selecione uma cidade</option>
               {cities.map((city, idx) => (
-                <option key={idx} value={city}>{city}</option>
+                <option key={idx} value={city}>
+                  {city}
+                </option>
               ))}
             </select>
           </div>
@@ -265,6 +309,12 @@ function CreatePost() {
               Enviar Adoção!
             </button>
           </div>
+          <div className="text-center">
+            <p className="font-bold text-red-600">
+              Por favor tenha em mente que o número cadastrado em sua conta será
+              disponibilizado para contato!
+            </p>
+          </div>  
         </form>
       </div>
     </div>

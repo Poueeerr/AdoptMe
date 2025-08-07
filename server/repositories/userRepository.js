@@ -36,5 +36,12 @@ async function createUser(userData){
     return user;
 }
 
+async function edit(userId, updateData){
+    const updatedUser = await prisma.user.update({
+      where: { id: userId },
+      data: updateData,
+    });
+    return updatedUser;
+}
 
-export default {findAll, findUser, createUser, findById}
+export default {findAll, findUser, createUser, findById, edit}

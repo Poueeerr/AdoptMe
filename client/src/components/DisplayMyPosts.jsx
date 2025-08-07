@@ -16,7 +16,6 @@ function DisplayMyPosts() {
   function getUserIdFromToken() {
     const token = localStorage.getItem("token");
     if (!token) return null;
-    console.log(token);
 
     try {
       const decoded = jwtDecode(token);

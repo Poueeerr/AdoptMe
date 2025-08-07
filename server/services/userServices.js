@@ -49,5 +49,7 @@ const getUsersById = async (id) =>{
     return userRepository.findById(id);
 }
 
-
-export default {createUser, getUsers, getUsersByEmail, getUsersById, login}
+const edit = async (userId, updateData) =>{
+  return userRepository.edit(userId, updateData);
+}
+export default {createUser, getUsers, getUsersByEmail, getUsersById, login, edit}

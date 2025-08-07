@@ -6,6 +6,8 @@ import CreatePostPage from "./CreatePostPage";
 import Home from "./HomePage";
 import ProtectedRoute from "./ProtectedRoutes";
 import DisplayMyPosts from "../components/DisplayMyPosts";
+import ProfilePage from "./ProfilePage";
+
 
 function AppRoutes() {
   return (
@@ -26,6 +28,14 @@ function AppRoutes() {
           element={
             <ProtectedRoute>
               <DisplayMyPosts />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <ProfilePage />
             </ProtectedRoute>
           }
         />

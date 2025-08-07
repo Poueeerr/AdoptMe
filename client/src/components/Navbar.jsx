@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
-import { NavLink } from "react-router-dom";
+import { Navigate, NavLink, useNavigate } from "react-router-dom";
 import api from "../api";
 import { FaBars, FaTimes } from "react-icons/fa";
 
 function Navbar() {
+    const nav = useNavigate();
+
   const [name, setName] = useState("");
   const [hasName, setHasName] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -15,6 +17,7 @@ function Navbar() {
       setHasName(false);
       setName("");
     };
+
 
     const check = async () => {
       try {
@@ -79,7 +82,7 @@ function Navbar() {
           <div className="hidden sm:flex items-center space-x-4">
             {hasName ? (
               <>
-                <span className="text-white text-sm">
+                <span className="text-white text-sm cursor-pointer" onClick={() => nav("/profile")}>
                   Bem-vindo(a), <strong>{name}</strong>
                 </span>
                 <button

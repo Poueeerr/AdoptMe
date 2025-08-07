@@ -10,6 +10,6 @@ router.post('/register', userController.create);
 router.post('/login', userController.login)
 
 router.get(`/id/:id`,authMiddleware, userController.getById);
-
+router.patch("/edit/:id", authMiddleware, userController.edit);
 
 export default router;
