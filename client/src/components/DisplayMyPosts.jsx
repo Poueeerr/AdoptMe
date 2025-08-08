@@ -77,7 +77,7 @@ function DisplayMyPosts() {
                       <img
                         //                      src={`https://backend-adopt.onrender.com/${img}`}
                         alt={`Imagem ${i + 1}`}
-                        src={`http://localhost:3000/${img}`}
+                        src={`https://backend-adopt.onrender.com/${img}`}
                         className="w-full h-full object-cover rounded-md"
                       />
                     </SwiperSlide>

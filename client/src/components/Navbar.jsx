@@ -4,7 +4,7 @@ import api from "../api";
 import { FaBars, FaTimes } from "react-icons/fa";
 
 function Navbar() {
-    const nav = useNavigate();
+  const nav = useNavigate();
 
   const [name, setName] = useState("");
   const [hasName, setHasName] = useState(false);
@@ -17,7 +17,6 @@ function Navbar() {
       setHasName(false);
       setName("");
     };
-
 
     const check = async () => {
       try {
@@ -73,16 +72,26 @@ function Navbar() {
                 Divulgar Adoção
               </NavLink>
 
-             {valid ? (<NavLink to="/userposts" className={linkClass}>
-                Minhas Divulgações
-              </NavLink>) : (null)} 
+              {valid && (
+                <div className="flex flex-col md:flex-row">
+                  <NavLink to="/userposts" className={linkClass}>
+                    Minhas Divulgações
+                  </NavLink>
+                  <NavLink to="/profile" className={linkClass}>
+                    Perfil
+                  </NavLink>
+                </div>
+              )}
             </div>
           </div>
 
           <div className="hidden sm:flex items-center space-x-4">
             {hasName ? (
               <>
-                <span className="text-white text-sm cursor-pointer" onClick={() => nav("/profile")}>
+                <span
+                  className="text-white text-sm cursor-pointer"
+                  onClick={() => nav("/profile")}
+                >
                   Bem-vindo(a), <strong>{name}</strong>
                 </span>
                 <button
@@ -133,6 +142,14 @@ function Navbar() {
           >
             Divulgar Adoção
           </NavLink>
+
+          {valid && (
+              <><NavLink to="/userposts" className={linkClass}>
+              Minhas Divulgações
+            </NavLink><NavLink to="/profile" className={linkClass}>
+                Perfil
+              </NavLink></>
+          )}
           {hasName ? (
             <>
               <span className="text-white text-right text-sm block">

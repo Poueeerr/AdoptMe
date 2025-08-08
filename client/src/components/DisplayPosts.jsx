@@ -8,26 +8,10 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 
 const predefinedTags = [
-  "Cachorro",
-  "Gato",
-  "Urgente",
-  "Filhote",
-  "Vacina",
-  "Castrado",
-  "Adoção",
-  "Pequeno porte",
-  "Médio porte",
-  "Grande porte",
-  "Amigável",
-  "Brincalhão",
-  "Calmo",
-  "Agressivo",
-  "Idoso",
-  "Doente",
-  "Cego",
-  "Surdo",
-  "Resgatado",
-  "Lar temporário",
+  "Cachorro", "Gato", "Urgente", "Filhote", "Vacina", "Castrado",
+  "Adoção", "Pequeno porte", "Médio porte", "Grande porte",
+  "Amigável", "Brincalhão", "Calmo", "Agressivo", "Idoso", "Doente",
+  "Cego", "Surdo", "Resgatado", "Lar temporário",
 ];
 
 function DisplayPosts({ page }) {
@@ -35,12 +19,12 @@ function DisplayPosts({ page }) {
   const [contacts, setContacts] = useState({});
   const [modalOpen, setModalOpen] = useState(false);
   const [modalPhone, setModalPhone] = useState("");
+  const [selectedPost, setSelectedPost] = useState(null);
 
   const [filters, setFilters] = useState({ state: "", city: "", tags: [] });
   const [states, setStates] = useState([]);
   const [cities, setCities] = useState([]);
 
-  // ───── Effects ─────
   useEffect(() => {
     fetchStates();
   }, []);
@@ -54,7 +38,6 @@ function DisplayPosts({ page }) {
     fetchPosts();
   }, [page, filters]);
 
-  // ───── API Calls ─────
   const fetchStates = async () => {
     try {
       const res = await api.get("/locations/states");
@@ -105,8 +88,10 @@ function DisplayPosts({ page }) {
     try {
       const res = await api.get(`/posts/getUserInfo/${postId}`);
       const phone = res.data.author.phone;
+      const post = posts.find((p) => p.id === postId);
       setContacts((prev) => ({ ...prev, [postId]: phone }));
       setModalPhone(phone);
+      setSelectedPost(post);
       setModalOpen(true);
     } catch (e) {
       console.error(e);
@@ -122,7 +107,6 @@ function DisplayPosts({ page }) {
     }));
   };
 
-  // ───── Render ─────
   return (
     <>
       {/* Filtros */}
@@ -131,7 +115,6 @@ function DisplayPosts({ page }) {
           Filtrar resultados
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
-          {/* Estado */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Estado
@@ -152,7 +135,6 @@ function DisplayPosts({ page }) {
             </select>
           </div>
 
-          {/* Cidade */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Cidade
@@ -173,7 +155,6 @@ function DisplayPosts({ page }) {
           </div>
         </div>
 
-        {/* Tags */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Tags
@@ -196,7 +177,7 @@ function DisplayPosts({ page }) {
         </div>
       </div>
 
-      {/* Cards de post */}
+      {/* Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 mt-4">
         {posts.length === 0 && (
           <p className="col-span-full text-center text-gray-500">
@@ -219,8 +200,7 @@ function DisplayPosts({ page }) {
                 {post.imagesUrl.map((img, i) => (
                   <SwiperSlide key={i}>
                     <img
-                      //                      src={`https://backend-adopt.onrender.com/${img}`}
-                      src={`http://localhost:3000/${img}`}
+                      src={`https://backend-adopt.onrender.com/${img}`}
                       alt={`Imagem ${i + 1}`}
                       className="w-full h-full object-cover rounded-md"
                     />
@@ -256,7 +236,6 @@ function DisplayPosts({ page }) {
         ))}
       </div>
 
-      {/* Modal de contato */}
       {modalOpen && (
         <div
           className="fixed inset-0 bg-black/90 flex justify-center items-center z-50"
@@ -274,46 +253,7 @@ function DisplayPosts({ page }) {
             <button
               onClick={() => {
                 const msg = encodeURIComponent(
-                  "Olá, gostaria de mais informações sobre a adoção do pet!"
-                );
-                const phone = modalPhone.replace(/\D/g, "");
-                window.open(`https://wa.me/55${phone}?text=${msg}`, "_blank");
-              }}
-              className="flex items-center gap-2 bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition mx-auto"
-            >
-              <FaWhatsapp className="text-2xl" />
-              Enviar mensagem
-            </button>
-
-            <button
-              onClick={() => setModalOpen(false)}
-              className="absolute top-2 right-2 text-red-600 text-xl"
-            >
-              ✕
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* Modal de contato */}
-      {modalOpen && (
-        <div
-          className="fixed inset-0 bg-black/90 flex justify-center items-center z-50"
-          onClick={() => setModalOpen(false)}
-        >
-          <div
-            className="bg-white rounded-lg p-6 w-200 shadow-lg relative"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <h2 className="text-lg font-bold mb-4">Contato</h2>
-            <p className="text-lg font-medium text-gray-700 text-center mb-4">
-              Telefone: <span className="font-semibold">{modalPhone}</span>
-            </p>
-
-            <button
-              onClick={() => {
-                const msg = encodeURIComponent(
-                  "Olá, gostaria de mais informações sobre a adoção do pet!"
+                  `Olá, gostaria de mais informações sobre a adoção do pet ${selectedPost?.title || ""}!`
                 );
                 const phone = modalPhone.replace(/\D/g, "");
                 window.open(`https://wa.me/55${phone}?text=${msg}`, "_blank");

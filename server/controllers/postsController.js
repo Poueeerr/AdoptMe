@@ -1,21 +1,27 @@
 import postsServices from "../services/postsServices.js";
 
-const createPost = async (req, res) =>{
-    try{
-        const authHeader = req.headers.authorization;
-        const {title, tags, content, location_id} = req.body;
-        const token = authHeader.split(' ')[1];
-        
-        const imagesUrl = req.files?.map(file => file.path) || [];
+const createPost = async (req, res) => {
+  try {
+    const authHeader = req.headers.authorization;
+    const { title, tags, content, location_id } = req.body;
+    const token = authHeader.split(' ')[1];
 
-        const response = await postsServices.createPost(token,title, tags, content, imagesUrl, location_id);
-        res.status(201).json(response);
-    }catch(e){
-        console.error('[createPost ERROR]', e);
+    const imagesUrl = req.processedFiles?.map(filename => `uploads/${filename}`) || [];
 
-        res.status(500).json({ err: e.message })
-    }
-}
+    const response = await postsServices.createPost(
+      token,
+      title,
+      tags,
+      content,
+      imagesUrl,
+      location_id
+    );
+    res.status(201).json(response);
+  } catch (e) {
+    console.error('[createPost ERROR]', e);
+    res.status(500).json({ err: e.message });
+  }
+};
 
 const getPostsPage = async (req, res) =>{
     try{
@@ -104,8 +110,8 @@ export async function updatePostController(req, res) {
       location_id: Number(location_id),
     };
 
-    if (req.files?.length > 0) {
-      updateData.imagesUrl = req.files.map((file) => file.path);
+    if (req.processedFiles?.length > 0) {
+      updateData.imagesUrl = req.processedFiles.map(filename => `uploads/${filename}`);
     }
 
     const updatedPost = await postsServices.updatePost(postId, updateData);
@@ -115,6 +121,7 @@ export async function updatePostController(req, res) {
     res.status(500).json({ error: error.message });
   }
 }
+
 
 
 export default {createPost, getPostsPage, getSize, getUserInfo, getPostsFiltered, getByUser, deletePost, updatePostController}
