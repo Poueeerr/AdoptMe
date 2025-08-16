@@ -36,8 +36,7 @@ async function busca() {
 
 async function inserirDados(locations) {
   const pool = new Pool({
-    connectionString: "postgresql://adoptdb_user:yVVBPStyvOWYN7T0DuYNk6HqPzoKy9iH@dpg-d2aic3buibrs73afuddg-a.oregon-postgres.render.com/adoptdb?sslmode=require",
-  });
+    connectionString: ""  });
 
   try {
     console.log('Conectando ao PostgreSQL...');
